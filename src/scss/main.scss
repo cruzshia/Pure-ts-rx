@@ -1,0 +1,226 @@
+@import './sprite.scss';
+
+body {
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 1310px;
+    height: 1080px;
+    background-image: url('../images/body-bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.x-d-ib {
+    display: inline-block;
+}
+
+.x-pa {
+    position: absolute;
+}
+
+.x-pr {
+    position: relative;
+}
+
+.x-vam {
+    vertical-align: middle;
+}
+
+.x-vat {
+    vertical-align: top;
+}
+
+.x-fill-w {
+    width: 100%;
+}
+
+.align-center {
+    margin: 0 auto;
+}
+
+.ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@keyframes fadeIn {
+    0% { 
+        opacity: 0;
+    } 
+    100% { 
+        opacity: 1;
+    }
+}
+
+@keyframes flip {
+    0% { 
+        transform: translateX(-50%) rotateY(0);
+    } 
+    50% {
+        transform: translateX(-50%) rotateY(180deg);
+    }
+    100% { 
+        transform: translateX(-50%);
+    }
+}
+
+.blocks {
+    box-sizing: border-box;
+    position: relative;
+    &.bg-1 {
+        margin-left: 23px;
+        @include sprite-width($background-1);
+        .content {
+            left: 0;
+            top: 0;
+            padding: 28px 18px 0;
+            width: calc(100% - 36px);
+
+            #animate-block.animate {
+                animation-name: fadeIn;
+                animation-duration: 1s;
+            }
+    
+            .title-2 {
+                margin-bottom: 29px;
+            }
+
+            .top-3-block {
+                margin-bottom: 35px;
+                .top-rank-item {
+                    width: 200px;
+                    padding-top: 25px;
+                    vertical-align: top;
+                    &.with-mar {
+                        margin-top: 60px;
+                    }
+    
+                    &:nth-child(2) {
+                        margin: 0 -40px;
+                    }
+    
+                    .crown-ico {
+                        top: 0;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        animation-name: flip;
+                        animation-duration: 0.5s;
+                        animation-iteration-count: 2;
+                    }
+    
+                    .no-blk {
+                        display: flex;
+                        align-items: center;
+                        left: -50px;
+                        top: 10px;
+                        .x-d-ib {
+                            margin-right: 5px;
+                        }
+     
+                        &.right {
+                            left: auto;
+                            right: -60px;
+                        }
+                    }
+    
+                    .name {
+                        font-size: 20px;
+                        color: #ffd943;
+                        max-width: 200px;
+                        .sub {
+                            font-size: 16px;
+                            line-height: 16px;
+                        }
+                    }
+                }
+            }
+
+            .rank-row {
+                padding: 0 28px;
+                height: 85px;
+                background-color: #3a0c73;
+                &:nth-child(2n) {
+                    background-color: #2a0f4b;
+                }
+
+                .rank-detail {
+                    width: 50%;
+                    margin-top: 14px;
+                    color: #fff;
+                    text-align: left;
+
+                    .rank {
+                        font-size: 26px;
+                    }
+
+                    .mr-15 {
+                        margin-right: 15px;
+                    }
+
+                    .detail {
+                        margin-left: 10px;
+                    }
+
+                    .sub-txt {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+
+    &.bg-2 {
+        .content {
+            top: 335px;
+            color: #fff;
+            .title {
+                font-size: 34px;
+                line-height: 40px;
+                margin-bottom: 15px;
+                text-shadow: 2px 2px rgba(255, 217, 67, 0.6);
+            }
+            .animate-blk {
+                height: 190px;
+            }
+            .note-board {
+                font-size: 30px;
+                line-height: 60px;
+                margin-bottom: 25px;
+            }
+            #buy-scroll-blk {
+                height: 275px;
+                max-height: 275px;
+                margin: 0 65px 0 85px;
+                text-align: left;
+                font-size: 20px;
+                overflow-y: auto;
+                word-break: break-all;
+                white-space: pre-wrap;
+            }
+        }
+    }
+}
+
+
+@include sprites(
+    ($background-1, 
+    $background-2, 
+    $title-2, 
+    $default-avatar, 
+    $default-avatar-sm, 
+    $arrow-up, 
+    $arrow-down, 
+    $arrow-even, 
+    $crown-1, 
+    $crown-2, 
+    $crown-3,
+    $top-1,
+    $top-2,
+    $top-3)
+);

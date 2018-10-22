@@ -1,0 +1,35 @@
+.top-3-block
+    .x-d-ib.top-rank-item.x-pr.with-mar
+        .crown-2.crown-ico.x-pa
+        .x-pa.no-blk
+            .x-d-ib.arrow-down
+            .x-d-ib.top-2
+        .default-avatar.x-d-ib
+        .name.ellipsis
+            |#{top3[1].name}
+            .sub #{top3[1].id}
+            .sub #{top3[1].number}浪潮
+    .x-d-ib.top-rank-item.x-pr
+        .crown-1.crown-ico.x-pa
+        .x-pa.no-blk
+            .x-d-ib.arrow-up
+            .x-d-ib.top-1
+        .default-avatar.x-d-ib
+        .name.ellipsis
+            |#{top3[0].name}
+            .sub #{top3[0].id}
+            .sub #{top3[0].number}浪潮
+    .x-d-ib.top-rank-item.x-pr.with-mar
+        .crown-3.crown-ico.x-pa
+        .x-pa.no-blk.right
+            .x-d-ib.arrow-even
+            .x-d-ib.top-3
+        .default-avatar.x-d-ib
+        .name.ellipsis
+            |#{top3[2].name}
+            .sub #{top3[2].id}
+            .sub #{top3[2].number}浪潮
+- var n = 0;
+while html.length && n < 7
+    .rank-row !{html[n]}
+    - n++
