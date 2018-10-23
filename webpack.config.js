@@ -6,11 +6,11 @@ const SpritesmithPlugin = require('webpack-spritesmith');
 module.exports = {
     /* if entry is not set, default is ./src/index.js */
     entry: {
-        main: path.resolve(__dirname, 'src/index.js'),
+        main: path.resolve(__dirname, 'src/index.ts'),
         // entry2: path.resolve(__dirname, 'src/entry2.js'),
     },
     resolve: {
-        extensions: ['.js'],
+        extensions: ['.js', '.ts'],
         modules: [
             path.resolve(__dirname, 'src/'),
             path.resolve(__dirname, 'node_modules/'),
@@ -27,7 +27,10 @@ module.exports = {
                         '@babel/proposal-object-rest-spread',
                         '@babel/proposal-class-properties']
                 }
-            }, {
+            },
+            { enforce: "pre", test: /\.js$/, loader: require.resolve('source-map-loader') }, 
+            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+            {
                 test: /\.scss$/,
                 use: [
                     process.env.NODE_ENV !== 'production' ? require.resolve('style-loader') : MiniCssExtractPlugin.loader,
@@ -48,7 +51,15 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        port: 8686
+        port: 8686,
+        proxy: {
+            '/api': {
+                target: 'https://api-dev.langlive.com',
+                pathRewrite: {'^/api' : ''},
+                secure: false,
+                changeOrigin: true
+            },
+        }
     },
     plugins: [
         new HtmlWebPackPlugin({

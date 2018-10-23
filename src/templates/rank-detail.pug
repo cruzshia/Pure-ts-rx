@@ -1,8 +1,8 @@
 .rank-detail.x-d-ib
-    .arrow-up.x-d-ib.x-vam.mr-15
+    .x-d-ib.x-vam.mr-15(class=flagIcon)
     .rank.x-d-ib.x-vam.mr-15 #{rank}
-    .default-avatar-sm.x-d-ib.x-vam
+    .default-avatar-sm.x-br-50.x-d-ib.x-vam(style=headimg ? 'background:url(' + headimg + ')' : '')
     .detail.x-d-ib.x-vam
-        div 主播暱稱
-        .sub-txt 主播ID
-        .sub-txt xxx,xxx浪潮
+        div #{nickname}
+        .sub-txt #{pfid}
+        .sub-txt #{score}浪潮
