@@ -41,7 +41,7 @@ module.exports = {
                 test: /\.pug$/, 
                 loader: require.resolve('pug-loader')
             }, {
-                test: /\.png$/, 
+                test: /\.(png|gif)$/, 
                 loader: require.resolve('file-loader'),
                 options: {
                     name: 'images/[name].[ext]'

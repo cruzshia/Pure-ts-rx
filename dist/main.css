@@ -1,6 +1,21 @@
+@charset "UTF-8";
 body {
   margin: 0;
-  background: #231e26; }
+  background: #231e26;
+  /* 设置滚动条的滑轨 */
+  /* 滑块 */
+  /* 滑轨两头的监听按钮 */ }
+  body::-webkit-scrollbar {
+    width: px(4);
+    height: 0; }
+  body::-webkit-scrollbar-track {
+    background-color: rgba(242, 242, 242, 0); }
+  body::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: px(4); }
+  body::-webkit-scrollbar-button {
+    background-color: #ddd;
+    display: none; }
 
 #root {
   display: flex;
@@ -40,6 +55,9 @@ body {
 
 .x-br-50 {
   border-radius: 50%; }
+
+.x-vh {
+  visibility: hidden; }
 
 @keyframes fadeIn {
   0% {
@@ -136,9 +154,14 @@ body {
       margin-bottom: 15px;
       text-shadow: 2px 2px rgba(255, 217, 67, 0.6); }
     .blocks.bg-2 .content .animate-blk {
-      height: 190px; }
+      height: 190px;
+      background-color: rgba(255, 255, 255, 0.9);
+      margin: 0 46px; }
+      .blocks.bg-2 .content .animate-blk img {
+        width: 240px; }
     .blocks.bg-2 .content .note-board {
       font-size: 30px;
+      height: 60px;
       line-height: 60px;
       margin-bottom: 25px; }
     .blocks.bg-2 .content #buy-scroll-blk {
@@ -149,7 +172,21 @@ body {
       font-size: 20px;
       overflow-y: auto;
       word-break: break-all;
-      white-space: pre-wrap; }
+      white-space: pre-wrap;
+      /* 设置滚动条的滑轨 */
+      /* 滑块 */
+      /* 滑轨两头的监听按钮 */ }
+      .blocks.bg-2 .content #buy-scroll-blk::-webkit-scrollbar {
+        width: px(4);
+        height: 4px; }
+      .blocks.bg-2 .content #buy-scroll-blk::-webkit-scrollbar-track {
+        background-color: rgba(242, 242, 242, 0); }
+      .blocks.bg-2 .content #buy-scroll-blk::-webkit-scrollbar-thumb {
+        background-color: rgba(242, 242, 242, 0);
+        border-radius: px(4); }
+      .blocks.bg-2 .content #buy-scroll-blk::-webkit-scrollbar-button {
+        background-color: #ddd;
+        display: none; }
 
 @keyframes bigger {
   0% {
@@ -168,7 +205,7 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -70%);
     color: #fff;
     font-size: 300px; }
     .preload .content.animate {
@@ -179,14 +216,23 @@ body {
     cursor: pointer;
     position: absolute;
     left: 50%;
-    bottom: 20%;
+    bottom: 10%;
     transform: translate(-50%, -50%);
     text-align: center;
-    width: 200px;
+    width: 150px;
+    height: 150px;
     color: #fff;
+    line-height: 150px;
     background-color: rgba(111, 34, 206, 0.7);
     font-size: 30px;
-    padding: 10px 20px; }
+    padding: 10px 20px;
+    outline: none;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 6px rgba(111, 34, 206, 0.9); }
+    .preload #button:active {
+      box-shadow: 0 3px rgba(111, 34, 206, 0.9);
+      transform: translate(-50%, calc(-50% + 4px)); }
 
 .background-1 {
   background-image: url(images/sprite.png);

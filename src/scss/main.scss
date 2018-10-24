@@ -1,8 +1,33 @@
 @import './sprite.scss';
 
+@mixin customer-bar($color: rgba(242,242,242,0), $height: 4px) {
+    &::-webkit-scrollbar{
+        width: px(4);
+        height: $height;
+    }
+
+    /* 设置滚动条的滑轨 */
+    &::-webkit-scrollbar-track {
+        background-color: rgba(242,242,242,0);
+    }
+
+    /* 滑块 */
+    &::-webkit-scrollbar-thumb {
+        background-color: $color;
+        border-radius: px(4);
+    }
+
+    /* 滑轨两头的监听按钮 */
+    &::-webkit-scrollbar-button {
+        background-color: #ddd;
+        display: none;
+    }
+}
+
 body {
     margin: 0;
     background: #231e26;
+    @include customer-bar(transparent, 0);
 }
 
 #root {
@@ -52,6 +77,10 @@ body {
 
 .x-br-50 {
     border-radius: 50%;
+}
+
+.x-vh {
+    visibility: hidden;
 }
 
 @keyframes fadeIn {
@@ -195,9 +224,15 @@ body {
             }
             .animate-blk {
                 height: 190px;
+                background-color: rgba(255, 255, 255, 0.9);
+                margin: 0 46px;
+                img {
+                    width: 240px;
+                }
             }
             .note-board {
                 font-size: 30px;
+                height: 60px;
                 line-height: 60px;
                 margin-bottom: 25px;
             }
@@ -210,6 +245,7 @@ body {
                 overflow-y: auto;
                 word-break: break-all;
                 white-space: pre-wrap;
+                @include customer-bar();
             }
         }
     }
@@ -237,7 +273,7 @@ body {
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -70%);
         color: #fff; 
         font-size: 300px;
         &.animate {
@@ -251,14 +287,24 @@ body {
         cursor: pointer;
         position: absolute;
         left: 50%;
-        bottom: 20%;
+        bottom: 10%;
         transform: translate(-50%, -50%);
         text-align: center;
-        width: 200px;
+        width: 150px;
+        height: 150px;
         color: #fff;
+        line-height: 150px;
         background-color: rgba(111, 34, 206, 0.7);
         font-size: 30px;
         padding: 10px 20px;
+        outline: none;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 6px rgba(111, 34, 206, 0.9);
+        &:active {
+            box-shadow: 0 3px rgba(111, 34, 206, 0.9);
+            transform: translate(-50%, calc(-50% + 4px));
+        }
     }
 }
 

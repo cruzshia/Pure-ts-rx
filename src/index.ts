@@ -1,8 +1,9 @@
 import { interval, throwError, Subscription, fromEvent } from 'rxjs';
-import { ajax } from 'rxjs/ajax';
+import { ajax, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
 import { map, switchMap, catchError, takeWhile, take } from 'rxjs/operators';
 import './scss/main.scss';
 import './favico.png';
+import './images/cargo.gif';
 
 import * as numeral from 'numeral';
 
@@ -49,6 +50,18 @@ interface ResBonus extends ResBase {
     data: BonusData[];
 }
 
+interface ComsumeData {
+    msg: string;
+    time: number;
+}
+
+interface ResConsume extends ResBase {
+    data: {
+        flag: number;
+        list: ComsumeData[];
+    }
+}
+
 declare global {
     interface Window { interval: any; switchMap: any;}
 }
@@ -65,6 +78,7 @@ var url = new URL(location.href);
 
     let rankSubscriber$: Subscription;
     let bonusSubscriber$: Subscription;
+    let consumeSubscriber$: Subscription;
     let countdownSubscriber$: Subscription;
 
     const STATUS_TITLE = [
@@ -86,9 +100,24 @@ var url = new URL(location.href);
         'arrow-up'
     ];
 
+    let startFlag = 0;
+    let consumeList: ComsumeData[] = [];
+
     const bonusAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/bonus_news'); 
-    const activityAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/list'); 
+    const rankAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/list'); 
     const statusAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/act'); 
+    const consumeAjax = function () {
+        return ajax({
+            url: apiRoot + '/v2/activity/etmall/consume_list',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: {
+                flag: startFlag
+            }
+        });
+    }
 
     let rankData: AnchorData[] = new Array(20).fill(emptyData);
     const top3 = rankData.slice(0, 3);
@@ -105,7 +134,6 @@ var url = new URL(location.href);
 
     let animateDom = document.getElementById('animate-block');
     const targetDom = document.getElementById('buy-scroll-blk');
-
     const updateStatus = () => {
         let statusText;
         const { status, count_down } = actInfo;
@@ -121,16 +149,10 @@ var url = new URL(location.href);
         document.getElementById('countdown').innerHTML = statusText;
     };
 
+
+    /** ========== fetch bonus title interval =========== */
     const renderBonusCbk = (res: ResBonus) => {
         if (res.ret_code === '0') {
-            let fragment = document.createDocumentFragment();
-            res.data.forEach((elem: BonusData) => {
-                const divDom = document.createElement('div');
-                divDom.innerHTML = elem.msg;
-                fragment.appendChild(divDom);
-            });
-            targetDom.innerHTML = '';
-            targetDom.appendChild(fragment);
             document.getElementsByClassName('note-board')[0].innerHTML = res.data.length ? res.data[0].msg : '';
         }
     }
@@ -140,6 +162,8 @@ var url = new URL(location.href);
         catchError((err: any) => throwError(err))
     );
 
+
+    /** ========== fetch ranking interval =========== */
     const renderRankCbk = (res: ResObject) => {
         if (res.ret_code === '0') {
             rankData = res.data.list;
@@ -164,22 +188,66 @@ var url = new URL(location.href);
     };
 
     const fetchInterval$ = interval(10000).pipe(
-        switchMap(() => activityAjax$),
+        switchMap(() => rankAjax$),
         catchError((err: any) => throwError(err))
     )
 
-    const startSubscriber = () => {
+    /** ========== fetch comsume interval =========== */
+    const consumeInterval$ = interval(3000).pipe(
+        switchMap(() => consumeAjax()),
+        catchError((err: any) => throwError(err))
+    )
+
+    const renderConSumeCbk = (res: ResConsume) => {
+        if (res.ret_code === '0') {
+            startFlag = res.data.flag; 
+            consumeList = res.data.list.length ? res.data.list.concat(consumeList) : consumeList;
+            consumeList = consumeList.slice(0, 100);
+            let fragment = document.createDocumentFragment();
+            consumeList.forEach((elem: ComsumeData) => { 
+                const divDom = document.createElement('div');
+                divDom.innerHTML = elem.msg;
+                fragment.appendChild(divDom);
+            });
+            targetDom.innerHTML = '';
+            if (targetDom.childNodes.length) {
+                targetDom.insertBefore(fragment, targetDom.firstChild);
+            } else {
+                targetDom.appendChild(fragment);
+            }
+        }
+    }
+
+    const consumeResCbk = (res: AjaxResponse) => {
+        const response = res.response;
+        if (response.ret_code === '0') {
+            startFlag = res.response.flag;
+            renderConSumeCbk(res.response); 
+        }
+    };
+
+
+    /** ========== subscriber ready for listen =========== */
+    const startSubscriber = (isEnd: boolean) => {
+        document.getElementsByClassName('animate-blk')[0].classList.remove('x-vh');
         // first fetch board data
         bonusAjax$.subscribe((res: ResBonus) => {
             renderBonusCbk(res);
-            bonusSubscriber$ = bonusInterval$.subscribe(renderBonusCbk); // re fetch board data per 30 secs
+            if (!isEnd) {
+                bonusSubscriber$ = bonusInterval$.subscribe(renderBonusCbk); // re fetch board data per 40 secs
+            }
         }); 
         
         // first fetch rank data
-        activityAjax$.subscribe((res: ResObject) => {
+        rankAjax$.subscribe((res: ResObject) => {
             renderRankCbk(res);
-            rankSubscriber$ = fetchInterval$.subscribe(renderRankCbk); // re fetch board data per 5 secs 
+            if (!isEnd) {
+                rankSubscriber$ = fetchInterval$.subscribe(renderRankCbk); // re fetch board data per 10 secs 
+            }
         });
+
+        // register fetch consume data
+        consumeSubscriber$ = consumeInterval$.subscribe(consumeResCbk);
 
         countdownSubscriber$ = 
             interval(1000).pipe(takeWhile(() => {
@@ -194,22 +262,26 @@ var url = new URL(location.href);
     const stopSubscriber = () => {
         rankSubscriber$ && rankSubscriber$.unsubscribe();
         bonusSubscriber$ && bonusSubscriber$.unsubscribe();
+        consumeSubscriber$ && consumeSubscriber$.unsubscribe();
         countdownSubscriber$ && countdownSubscriber$.unsubscribe();
     };
 
+    /** ========== status checking interval =========== */
     const start$ = interval(3000).pipe(
         switchMap(() => statusAjax$),
         takeWhile((res: StatusRes) => {
-            const isStart = res.data.status === 2;
+            const isStart = res.data.status >= 2;
             actInfo = res.data;
             if (isStart) {
-                startSubscriber();
+                startSubscriber(res.data.status === 3);
             }
             updateStatus();
             return !isStart;
-        })
+        }),
+        take(10)
     );
 
+    /** ========== countdown button and starter =========== */
     let count = 10;
     const preloadDom = document.getElementById('preload-content');
     const countDown$ = interval(1000).pipe(
