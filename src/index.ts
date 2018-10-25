@@ -116,9 +116,6 @@ var url = new URL(location.href);
         return ajax({
             url: apiRoot + '/v2/activity/etmall/consume_list',
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
             body: data
         });
     }
