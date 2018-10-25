@@ -4,17 +4,17 @@
         .x-pa.no-blk
             .x-d-ib(class=top3[1].flagIcon)
             .x-d-ib.top-2
-        .default-avatar.x-br-50.x-d-ib(style=top3[1].headimg ? 'background:url(' + top3[1].headimg + ')' : '')
+        .default-avatar.x-br-50.x-d-ib(style=top3[1].headimg ? 'background:url(' + top3[1].headimg + ') center' : '')
         .name.ellipsis
             |#{top3[1].nickname}
-            .sub #{top3[1].pfid || '--'}
+            .sub #{top3[1].pfid}
             .sub #{top3[1].score}浪潮
     .x-d-ib.top-rank-item.x-pr
         .crown-1.crown-ico.x-pa
         .x-pa.no-blk
             .x-d-ib(class=top3[0].flagIcon)
             .x-d-ib.top-1
-        .default-avatar.x-br-50.x-d-ib(style=top3[0].headimg ? 'background:url(' + top3[0].headimg + ')' : '')
+        .default-avatar.x-br-50.x-d-ib(style=top3[0].headimg ? 'background:url(' + top3[0].headimg + ') center' : '')
         .name.ellipsis
             |#{top3[0].nickname}
             .sub #{top3[0].pfid}
@@ -24,7 +24,7 @@
         .x-pa.no-blk.right
             .x-d-ib(class=top3[2].flagIcon)
             .x-d-ib.top-3
-        .default-avatar.x-br-50.x-d-ib(style=top3[2].headimg ? 'background:url(' + top3[2].headimg + ')' : '')
+        .default-avatar.x-br-50.x-d-ib(style=top3[2].headimg ? 'background:url(' + top3[2].headimg + ') center' : '')
         .name.ellipsis
             |#{top3[2].nickname}
             .sub #{top3[2].pfid}

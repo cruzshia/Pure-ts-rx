@@ -94,7 +94,7 @@ var url = new URL(location.href);
         '--',
         '',
         '',
-        '--'
+        '&nbsp;'
     ];
 
     const FLAG = [
@@ -110,15 +110,16 @@ var url = new URL(location.href);
     const rankAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/list'); 
     const statusAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/act'); 
     const consumeAjax = function () {
+        var data;
+        data = new FormData();
+        data.append('flag', startFlag.toString());
         return ajax({
             url: apiRoot + '/v2/activity/etmall/consume_list',
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: {
-                flag: startFlag
-            }
+            body: data
         });
     }
 
@@ -182,9 +183,9 @@ var url = new URL(location.href);
     /** ========== fetch ranking interval =========== */
     const renderRankCbk = (res: ResObject) => {
         if (res.ret_code === '0') {
-            rankData = res.data.list;
+            rankData = res.data.list || [];
             rankData.forEach(data => {
-                data.flagIcon = FLAG[data.flag];
+                data.flagIcon = data.flag >= 0 ? FLAG[data.flag] : '';
             });
             renderRank(animateDom, rankData);
             if (res.data.act_info.status > 2) {

@@ -143,7 +143,7 @@ body {
             margin-right: 15px; }
           .blocks.bg-1 .content .rank-row .rank-detail .detail {
             margin-left: 10px;
-            max-width: 160px; }
+            max-width: 150px; }
           .blocks.bg-1 .content .rank-row .rank-detail .sub-txt {
             font-size: 12px; }
   .blocks.bg-2 .content {
@@ -164,7 +164,7 @@ body {
       font-size: 30px;
       height: 60px;
       line-height: 60px;
-      margin-bottom: 25px; }
+      margin: 0 55px 25px; }
     .blocks.bg-2 .content #buy-scroll-blk {
       height: 275px;
       max-height: 275px;

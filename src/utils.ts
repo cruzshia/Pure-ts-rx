@@ -31,11 +31,15 @@ export const rankHtml = function (rankData: Array<any>) {
     return html;
 }
 
-export const renderRank = function (animateDom: HTMLElement, rankData: Array<any>) {
+export const renderRank = function (animateDom: HTMLElement, rankData: Array<any> = []) {
     animateDom.innerHTML = '';
+    let top3 = rankData.slice(0, 3);
+    for (let i = 0; i < 3; i++) {
+        top3[i] = top3[i] || emptyData;
+    }
     animateDom.appendChild(
         createFragment(rankTemplate({
-            top3: rankData.slice(0, 3),
+            top3,
             html: rankHtml(rankData)
         }))
     );
