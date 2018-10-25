@@ -8,7 +8,7 @@ import './images/cargo.gif';
 import * as numeral from 'numeral';
 
 import template from './templates/index.pug';
-import { getApiRoot, createFragment, renderRank, emptyData } from './utils';
+import { getApiRoot, createFragment, renderRank, rankHtml, emptyData } from './utils';
 
 interface AnchorData {
     headimg: string;
@@ -76,20 +76,23 @@ var url = new URL(location.href);
         count_down: 0
     } as ActInfo;
 
+    let preloadSubscriber$: Subscription;
+
     let rankSubscriber$: Subscription;
     let bonusSubscriber$: Subscription;
     let consumeSubscriber$: Subscription;
     let countdownSubscriber$: Subscription;
+    let startSubscriber$: Subscription;
 
     const STATUS_TITLE = [
-        '活動尚未開始',
-        '活動即將開始',
+        '活動預計於10月8日18:45開始',
+        '距離活動開始還有',
         '距離活動結束還有',
         '活動已結束'
     ];
     const STATUS_TEXT = [
         '--',
-        '--',
+        '',
         '',
         '--'
     ];
@@ -127,7 +130,7 @@ var url = new URL(location.href);
     rootDom.appendChild(createFragment(
         template({
             top3,
-            html: new Array(7).fill('')
+            html: rankHtml(new Array(7).fill(''))
         }),
         ['align-center']
     ));
@@ -137,9 +140,14 @@ var url = new URL(location.href);
     const updateStatus = () => {
         let statusText;
         const { status, count_down } = actInfo;
-        if (status !== 2) {
-            statusText = STATUS_TEXT[status];
-        } else {
+        statusText = STATUS_TEXT[status];
+
+        if (status === 1 && !startSubscriber$ && count_down <= 10) {
+            document.getElementsByClassName('preload')[0].classList.remove('hide');
+            startSubscriber$ = countDown$.subscribe(animate);
+        }
+
+        if (count_down > 0) {
             let h = Math.floor(count_down / 3600);
             let m = Math.floor(count_down / 60) % 60;
             statusText = `${numeral(h).format('00')}:${numeral(m).format('00')}:${numeral(count_down % 60).format('00')}`
@@ -148,6 +156,14 @@ var url = new URL(location.href);
         document.getElementById('countTitle').innerHTML = STATUS_TITLE[status];
         document.getElementById('countdown').innerHTML = statusText;
     };
+
+    /** ========== countdown interval =========== */
+    let count = 10;
+    const preloadDom = document.getElementById('preload-content');
+    const countDown$ = interval(1000).pipe(
+        map(() => count--),
+        takeWhile(() => count >= 0)
+    );
 
 
     /** ========== fetch bonus title interval =========== */
@@ -288,51 +304,75 @@ var url = new URL(location.href);
 
     /** ========== status checking interval =========== */
     const startCbk = (res: StatusRes) => {
-        const isStart = res.data.status >= 2;
+        const { status } = res.data;
+        const isStart = status >= 2;
+        const isStatusChange = actInfo.status !== status;
         actInfo = res.data;
-        if (isStart) {
-            startSubscriber(res.data.status === 3);
+
+        if (status === 1 && !preloadSubscriber$) {
+            preloadSubscriber$ = interval(1000).pipe(takeWhile(() => {
+                return actInfo.count_down > 0
+            })).subscribe(() => {
+                actInfo.count_down--;
+                updateStatus();
+            });
         }
-        updateStatus();
-        return !isStart;
+        if (isStart) {
+            preloadSubscriber$ && preloadSubscriber$.unsubscribe();
+            startSubscriber();
+        }
+
+        if (isStatusChange) {
+            updateStatus();
+        }
+        return status < 2;
     };
 
     const start$ = interval(3000).pipe(
         switchMap(() => statusAjax$),
-        takeWhile(startCbk),
-        take(10)
+        takeWhile(startCbk)
     );
 
-    /** ========== countdown button and starter =========== */
-    let count = 10;
-    const preloadDom = document.getElementById('preload-content');
-    const countDown$ = interval(1000).pipe(
-        map(() => count--),
-        takeWhile(() => count >= 0)
-    );
+    statusAjax$.subscribe((res: StatusRes) => {
+        startCbk(res);
+        if (res.data.status < 2) {
+            start$.subscribe();
+        }
+    })
 
-    if (url.searchParams.get('skip')) {
-        document.getElementsByClassName('preload')[0].remove();
-        statusAjax$.subscribe(startCbk);
-    } else {
-        fromEvent(document.getElementById('button'), 'click').pipe(take(1))
-            .subscribe((e: Event) => {
-                (<HTMLElement>e.target).remove();
-                countDown$.subscribe(() => { 
-                    const dom = document.createElement('div');
-                    dom.classList.add('content', 'animate');
-                    dom.innerHTML = count.toString();
-                    preloadDom.replaceChild(dom, preloadDom.childNodes[1]);
-                    if (count === 5) {
-                        start$.subscribe();
-                    }
 
-                    if (count <= 0) {
-                        document.getElementsByClassName('preload')[0].remove();
-                    }
-                });
-            }
-        );
-    }
+    const animate = () => { 
+        const dom = document.createElement('div');
+        dom.classList.add('content', 'animate');
+        dom.innerHTML = count.toString();
+        preloadDom.replaceChild(dom, preloadDom.childNodes[1]);
+
+        if (count <= 0) {
+            document.getElementsByClassName('preload')[0].remove();
+        }
+    };
+    // if (url.searchParams.get('skip')) {
+    //     document.getElementsByClassName('preload')[0].remove();
+    //     statusAjax$.subscribe(startCbk);
+    // } else {
+    //     fromEvent(document.getElementById('button'), 'click').pipe(take(1))
+    //         .subscribe((e: Event) => {
+    //             (<HTMLElement>e.target).remove();
+                // countDown$.subscribe(() => { 
+                //     const dom = document.createElement('div');
+                //     dom.classList.add('content', 'animate');
+                //     dom.innerHTML = count.toString();
+                //     preloadDom.replaceChild(dom, preloadDom.childNodes[1]);
+                //     if (count === 5) {
+                //         start$.subscribe();
+                //     }
+
+                //     if (count <= 0) {
+                //         document.getElementsByClassName('preload')[0].remove();
+                //     }
+                // });
+    //         }
+    //     );
+    // }
     
 })();

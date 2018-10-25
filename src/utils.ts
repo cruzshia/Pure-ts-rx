@@ -20,7 +20,7 @@ export const createFragment = function (html: string, parentDomClass:(string[]) 
     return fragmentDom;
 };
 
-export const renderRank = function (animateDom: HTMLElement, rankData: Array<any>) {
+export const rankHtml = function (rankData: Array<any>) {
     let html = new Array(7).fill('');
     for (let i = 3; i < 17; i++) {
         html[((i - 3) % 7)] += rankDetail({ 
@@ -28,12 +28,15 @@ export const renderRank = function (animateDom: HTMLElement, rankData: Array<any
             rank: i + 1
         });
     }
+    return html;
+}
 
+export const renderRank = function (animateDom: HTMLElement, rankData: Array<any>) {
     animateDom.innerHTML = '';
     animateDom.appendChild(
         createFragment(rankTemplate({
             top3: rankData.slice(0, 3),
-            html
+            html: rankHtml(rankData)
         }))
     );
     animateDom.classList.remove('animate');

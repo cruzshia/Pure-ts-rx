@@ -26,7 +26,7 @@
 
 body {
     margin: 0;
-    background: #231e26;
+    background: linear-gradient(to bottom right, #363237, #251e26);;
     @include customer-bar(transparent, 0);
 }
 
@@ -167,7 +167,7 @@ body {
     
                     .name {
                         font-size: 20px;
-                        color: #ffd943;
+                        color: #ffd472;
                         max-width: 200px;
                         .sub {
                             font-size: 16px;
@@ -181,15 +181,15 @@ body {
             .rank-row {
                 padding: 0 28px;
                 height: 85px;
-                background-color: #3a0c73;
+                background-color: #7c5c33;
                 &:nth-child(2n) {
-                    background-color: #2a0f4b;
+                    background-color: #6a4f2c;
                 }
 
                 .rank-detail {
                     width: 50%;
                     margin-top: 14px;
-                    color: #fff;
+                    color: #ffdfa6;
                     text-align: left;
 
                     .rank {
@@ -202,7 +202,7 @@ body {
 
                     .detail {
                         margin-left: 10px;
-                        max-width: 170px;
+                        max-width: 160px;
                     }
 
                     .sub-txt {
@@ -268,7 +268,11 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
+
+    &.hide {
+        display: none;
+    }
 
     .content {
         position: absolute;
@@ -281,30 +285,6 @@ body {
             animation-name: bigger;
             animation-duration: 0.5s;
             animation-timing-function: linear;
-        }
-    }
-
-    #button {
-        cursor: pointer;
-        position: absolute;
-        left: 50%;
-        bottom: 10%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 150px;
-        height: 150px;
-        color: #fff;
-        line-height: 150px;
-        background-color: rgba(111, 34, 206, 0.7);
-        font-size: 30px;
-        padding: 10px 20px;
-        outline: none;
-        border: none;
-        border-radius: 50%;
-        box-shadow: 0 6px rgba(111, 34, 206, 0.9);
-        &:active {
-            box-shadow: 0 3px rgba(111, 34, 206, 0.9);
-            transform: translate(-50%, calc(-50% + 4px));
         }
     }
 }

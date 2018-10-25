@@ -58,6 +58,7 @@ module.exports = {
         proxy: {
             '/api': {
                 target: 'https://api-dev.langlive.com',
+                // target: 'https://api.s.lang.live',
                 pathRewrite: {'^/api' : ''},
                 secure: false,
                 changeOrigin: true
@@ -70,7 +71,7 @@ module.exports = {
             filename: './index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].css',
+            filename: '[name].css?v=[hash]',
             chunkFilename: '[id].css'
         }),
         new SpritesmithPlugin({
