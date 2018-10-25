@@ -1,5 +1,5 @@
 import { interval, throwError, Subscription, fromEvent } from 'rxjs';
-import { ajax, AjaxRequest, AjaxResponse } from 'rxjs/ajax';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { map, switchMap, catchError, takeWhile, take } from 'rxjs/operators';
 import './scss/main.scss';
 import './favico.png';
@@ -228,21 +228,41 @@ var url = new URL(location.href);
 
 
     /** ========== subscriber ready for listen =========== */
-    const startSubscriber = (isEnd: boolean) => {
+    const startSubscriber = (isEnd: boolean = false) => {
         document.getElementsByClassName('animate-blk')[0].classList.remove('x-vh');
         // first fetch board data
         bonusAjax$.subscribe((res: ResBonus) => {
             renderBonusCbk(res);
+            let bonusErrorCount = 0;
             if (!isEnd) {
-                bonusSubscriber$ = bonusInterval$.subscribe(renderBonusCbk); // re fetch board data per 40 secs
+                // re fetch board data per 40 secs
+                bonusSubscriber$ = bonusInterval$.subscribe(
+                    renderBonusCbk,
+                    () => {
+                        bonusErrorCount++;
+                        if (bonusErrorCount > 5) {
+                            bonusSubscriber$.unsubscribe();
+                        }
+                    }
+                );
             }
         }); 
-        
+
         // first fetch rank data
         rankAjax$.subscribe((res: ResObject) => {
             renderRankCbk(res);
+            let rankErrorCount = 0;
             if (!isEnd) {
-                rankSubscriber$ = fetchInterval$.subscribe(renderRankCbk); // re fetch board data per 10 secs 
+                // re fetch board data per 10 secs
+                rankSubscriber$ = fetchInterval$.subscribe(
+                    renderRankCbk,
+                    () => {
+                        rankErrorCount++;
+                        if (rankErrorCount > 5) {
+                            rankSubscriber$.unsubscribe();
+                        }
+                    }
+                );  
             }
         });
 
@@ -267,17 +287,19 @@ var url = new URL(location.href);
     };
 
     /** ========== status checking interval =========== */
+    const startCbk = (res: StatusRes) => {
+        const isStart = res.data.status >= 2;
+        actInfo = res.data;
+        if (isStart) {
+            startSubscriber(res.data.status === 3);
+        }
+        updateStatus();
+        return !isStart;
+    };
+
     const start$ = interval(3000).pipe(
         switchMap(() => statusAjax$),
-        takeWhile((res: StatusRes) => {
-            const isStart = res.data.status >= 2;
-            actInfo = res.data;
-            if (isStart) {
-                startSubscriber(res.data.status === 3);
-            }
-            updateStatus();
-            return !isStart;
-        }),
+        takeWhile(startCbk),
         take(10)
     );
 
@@ -291,7 +313,7 @@ var url = new URL(location.href);
 
     if (url.searchParams.get('skip')) {
         document.getElementsByClassName('preload')[0].remove();
-        start$.subscribe();
+        statusAjax$.subscribe(startCbk);
     } else {
         fromEvent(document.getElementById('button'), 'click').pipe(take(1))
             .subscribe((e: Event) => {

@@ -9,6 +9,9 @@ module.exports = {
         main: path.resolve(__dirname, 'src/index.ts'),
         // entry2: path.resolve(__dirname, 'src/entry2.js'),
     },
+    output: {
+        filename: '[name].js?v=[hash]'
+    },
     resolve: {
         extensions: ['.js', '.ts'],
         modules: [

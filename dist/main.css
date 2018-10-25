@@ -142,7 +142,8 @@ body {
           .blocks.bg-1 .content .rank-row .rank-detail .mr-15 {
             margin-right: 15px; }
           .blocks.bg-1 .content .rank-row .rank-detail .detail {
-            margin-left: 10px; }
+            margin-left: 10px;
+            max-width: 170px; }
           .blocks.bg-1 .content .rank-row .rank-detail .sub-txt {
             font-size: 12px; }
   .blocks.bg-2 .content {
