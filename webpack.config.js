@@ -57,8 +57,8 @@ module.exports = {
         port: 8686,
         proxy: {
             '/api': {
-                // target: 'https://api-dev.langlive.com',
-                target: 'https://api.s.lang.live',
+                target: 'https://api-dev.langlive.com',
+                // target: 'https://api.s.lang.live',
                 pathRewrite: {'^/api' : ''},
                 secure: false,
                 changeOrigin: true

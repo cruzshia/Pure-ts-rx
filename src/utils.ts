@@ -23,7 +23,8 @@ export const createFragment = function (html: string, parentDomClass:(string[]) 
 export const rankHtml = function (rankData: Array<any>) {
     let html = new Array(7).fill('');
     for (let i = 3; i < 17; i++) {
-        html[((i - 3) % 7)] += rankDetail({ 
+        const row = Math.floor((i - 3) / 2);
+        html[row] += rankDetail({ 
             ...(rankData[i] || emptyData),
             rank: i + 1
         });

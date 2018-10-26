@@ -217,18 +217,26 @@ var url = new URL(location.href);
             startFlag = res.data.flag; 
             consumeList = res.data.list.length ? res.data.list.concat(consumeList) : consumeList;
             consumeList = consumeList.slice(0, 100);
-            let fragment = document.createDocumentFragment();
+            // let fragment = document.createDocumentFragment();
             consumeList.forEach((elem: ComsumeData) => { 
                 const divDom = document.createElement('div');
                 divDom.innerHTML = elem.msg;
-                fragment.appendChild(divDom);
+                if (targetDom.childNodes.length) {
+                    targetDom.insertBefore(divDom, targetDom.firstChild);
+                } else {
+                    targetDom.appendChild(divDom);
+                }
+                // fragment.appendChild(divDom);
             });
-            targetDom.innerHTML = '';
-            if (targetDom.childNodes.length) {
-                targetDom.insertBefore(fragment, targetDom.firstChild);
-            } else {
-                targetDom.appendChild(fragment);
+            while (targetDom.childNodes.length > 100) {
+                targetDom.removeChild(targetDom.lastChild);
             }
+            // targetDom.innerHTML = '';
+            // if (targetDom.childNodes.length) {
+            //     targetDom.insertBefore(fragment, targetDom.firstChild);
+            // } else {
+            //     targetDom.appendChild(fragment);
+            // }
         }
     }
 
