@@ -66,8 +66,6 @@ declare global {
     interface Window { interval: any; switchMap: any;}
 }
 
-var url = new URL(location.href);
-
 (function() {
     const apiRoot = getApiRoot();
 
@@ -88,12 +86,12 @@ var url = new URL(location.href);
         '活動預計於10月8日18:45開始',
         '距離活動開始還有',
         '距離活動結束還有',
-        '活動已結束'
+        '活動已結束，正在結算中'
     ];
     const STATUS_TEXT = [
         '--',
-        '',
-        '',
+        '&nbsp;',
+        '&nbsp;',
         '&nbsp;'
     ];
 
@@ -152,7 +150,7 @@ var url = new URL(location.href);
         }
 
         document.getElementById('countTitle').innerHTML = STATUS_TITLE[status];
-        document.getElementById('countdown').innerHTML = statusText;
+        document.getElementById('countdown').innerHTML = statusText || '&nbsp;';
     };
 
     /** ========== countdown interval =========== */
@@ -167,7 +165,12 @@ var url = new URL(location.href);
     /** ========== fetch bonus title interval =========== */
     const renderBonusCbk = (res: ResBonus) => {
         if (res.ret_code === '0') {
-            document.getElementsByClassName('note-board')[0].innerHTML = res.data.length ? res.data[0].msg : '';
+            const hasData = res.data.length > 0;
+            let newDom = document.createElement(hasData ? 'marquee' : 'div');
+            newDom.innerHTML = hasData ? res.data[0].msg : '';
+            // document.getElementsByClassName('note-board')[0].innerHTML = res.data.length ? res.data[0].msg : '';
+            const parentDom = document.getElementsByClassName('note-board')[0];
+            parentDom.replaceChild(newDom, parentDom.firstElementChild);
         }
     }
 
@@ -192,11 +195,9 @@ var url = new URL(location.href);
                     renderBonusCbk(res);
                 });
 
-                if (Math.abs(actInfo.count_down - res.data.act_info.count_down) > 3) {
-                    actInfo.count_down = res.data.act_info.count_down;
-                }
                 actInfo.status = res.data.act_info.status;
                 updateStatus();
+                document.getElementById('countdown').innerHTML = '&nbsp;';
             }
         }
     };
@@ -215,28 +216,24 @@ var url = new URL(location.href);
     const renderConSumeCbk = (res: ResConsume) => {
         if (res.ret_code === '0') {
             startFlag = res.data.flag; 
-            consumeList = res.data.list.length ? res.data.list.concat(consumeList) : consumeList;
-            consumeList = consumeList.slice(0, 100);
-            // let fragment = document.createDocumentFragment();
+            consumeList = res.data.list.length ? res.data.list : [];
             consumeList.forEach((elem: ComsumeData) => { 
                 const divDom = document.createElement('div');
                 divDom.innerHTML = elem.msg;
+                divDom.classList.add('scale-out');
                 if (targetDom.childNodes.length) {
                     targetDom.insertBefore(divDom, targetDom.firstChild);
                 } else {
                     targetDom.appendChild(divDom);
                 }
-                // fragment.appendChild(divDom);
+                setTimeout(() => {
+                    divDom.style.transform = 'scaleY(1)';
+                }, 200);
+                
             });
             while (targetDom.childNodes.length > 100) {
                 targetDom.removeChild(targetDom.lastChild);
             }
-            // targetDom.innerHTML = '';
-            // if (targetDom.childNodes.length) {
-            //     targetDom.insertBefore(fragment, targetDom.firstChild);
-            // } else {
-            //     targetDom.appendChild(fragment);
-            // }
         }
     }
 
@@ -357,28 +354,4 @@ var url = new URL(location.href);
             document.getElementsByClassName('preload')[0].remove();
         }
     };
-    // if (url.searchParams.get('skip')) {
-    //     document.getElementsByClassName('preload')[0].remove();
-    //     statusAjax$.subscribe(startCbk);
-    // } else {
-    //     fromEvent(document.getElementById('button'), 'click').pipe(take(1))
-    //         .subscribe((e: Event) => {
-    //             (<HTMLElement>e.target).remove();
-                // countDown$.subscribe(() => { 
-                //     const dom = document.createElement('div');
-                //     dom.classList.add('content', 'animate');
-                //     dom.innerHTML = count.toString();
-                //     preloadDom.replaceChild(dom, preloadDom.childNodes[1]);
-                //     if (count === 5) {
-                //         start$.subscribe();
-                //     }
-
-                //     if (count <= 0) {
-                //         document.getElementsByClassName('preload')[0].remove();
-                //     }
-                // });
-    //         }
-    //     );
-    // }
-    
 })();

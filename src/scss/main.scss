@@ -94,6 +94,15 @@ body {
     }
 }
 
+@keyframes scaleYAnimate {
+    0% { 
+        transform: scaleY(0);
+    } 
+    100% { 
+        transform: scaleY(1);
+    }
+}
+
 @keyframes flip {
     0% { 
         transform: translateX(-50%) rotateY(0);
@@ -124,11 +133,11 @@ body {
             }
     
             .title-2 {
-                margin-bottom: 29px;
+                margin-bottom: 8px;
             }
 
             .top-3-block {
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 .top-rank-item {
                     width: 200px;
                     padding-top: 25px;
@@ -166,12 +175,13 @@ body {
                     }
     
                     .name {
-                        font-size: 20px;
+                        font-size: 30px;
+                        line-height: 40px;
                         color: #ffd472;
                         max-width: 200px;
                         .sub {
-                            font-size: 16px;
-                            line-height: 16px;
+                            font-size: 20px;
+                            line-height: 20px;
                             margin-bottom: 5px;
                         }
                     }
@@ -188,7 +198,7 @@ body {
 
                 .rank-detail {
                     width: 50%;
-                    margin-top: 14px;
+                    margin-top: 4px;
                     color: #ffdfa6;
                     text-align: left;
 
@@ -202,11 +212,11 @@ body {
 
                     .detail {
                         margin-left: 10px;
-                        max-width: 150px;
+                        max-width: 145px;
                     }
 
                     .sub-txt {
-                        font-size: 12px;
+                        font-size: 18px;
                     }
                 }
             }
@@ -218,10 +228,11 @@ body {
             top: 335px;
             color: #fff;
             .title {
-                font-size: 34px;
+                font-size: 40px;
                 line-height: 40px;
                 margin-bottom: 15px;
                 text-shadow: 2px 2px rgba(255, 217, 67, 0.6);
+                min-height: 80px;
             }
             .animate-blk {
                 height: 190px;
@@ -232,7 +243,7 @@ body {
                 }
             }
             .note-board {
-                font-size: 26px;
+                font-size: 40px;
                 height: 60px;
                 line-height: 60px;
                 margin: 0 55px 25px;
@@ -247,6 +258,16 @@ body {
                 word-break: break-all;
                 white-space: pre-wrap;
                 @include customer-bar();
+
+                .scale-out {
+                    // animation-duration: 0.2s;
+                    // animation-timing-function: linear;
+                    // animation: fadeIn;
+                    // animation-delay: 0.5s;
+                    transition: 0.2s all;
+                    transform: scaleY(0);
+                    transform-origin: top;
+                }
             }
         }
     }
