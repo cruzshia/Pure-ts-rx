@@ -1,11 +1,12 @@
-import { interval, throwError, Subscription, fromEvent } from 'rxjs';
+import { interval, throwError, Subscription } from 'rxjs';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
-import { map, switchMap, catchError, takeWhile, take } from 'rxjs/operators';
+import { map, switchMap, catchError, takeWhile } from 'rxjs/operators';
 import './scss/main.scss';
 import './favico.png';
 import './images/cargo.gif';
 
 import * as numeral from 'numeral';
+import { Map } from 'immutable'
 
 import template from './templates/index.pug';
 import { getApiRoot, createFragment, renderRank, rankHtml, emptyData } from './utils';
@@ -62,6 +63,12 @@ interface ResConsume extends ResBase {
     }
 }
 
+interface Obj extends Map<string, any> {
+	a: number,
+	b: string,
+	c: number
+}
+
 declare global {
     interface Window { interval: any; switchMap: any;}
 }
@@ -102,8 +109,8 @@ declare global {
     ];
 
     let startFlag = 0;
-    let consumeList: ComsumeData[] = [];
-
+		let consumeList: ComsumeData[] = [];
+		
     const bonusAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/bonus_news'); 
     const rankAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/list'); 
     const statusAjax$ = ajax.getJSON(apiRoot + '/v2/activity/etmall/act'); 

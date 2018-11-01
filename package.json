@@ -40,6 +40,7 @@
     "webpack-spritesmith": "^0.5.3"
   },
   "dependencies": {
-    "@types/pug": "^2.0.4"
+    "@types/pug": "^2.0.4",
+    "immutable": "^4.0.0-rc.12"
   }
 }
