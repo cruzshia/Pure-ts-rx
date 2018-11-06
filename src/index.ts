@@ -6,7 +6,7 @@ import './favico.png';
 import './images/cargo.gif';
 
 import * as numeral from 'numeral';
-import { Map } from 'immutable'
+import { Record } from 'immutable'
 
 import template from './templates/index.pug';
 import { getApiRoot, createFragment, renderRank, rankHtml, emptyData } from './utils';
@@ -63,24 +63,18 @@ interface ResConsume extends ResBase {
     }
 }
 
-interface Obj extends Map<string, any> {
-	a: number,
-	b: string,
-	c: number
-}
-
 declare global {
     interface Window { interval: any; switchMap: any;}
 }
 
 (function() {
-    const apiRoot = getApiRoot();
+		const apiRoot = getApiRoot();
 
     let actInfo = {
         status: 0,
         count_down: 0
-    } as ActInfo;
-
+		} as ActInfo;
+		
     let preloadSubscriber$: Subscription;
 
     let rankSubscriber$: Subscription;
