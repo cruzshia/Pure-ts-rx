@@ -51,11 +51,5 @@ export const renderRank = function (animateDom: HTMLElement, rankData: Array<any
 }
 
 export const getApiRoot = function () {
-    let path = '/api';
-    if (location.href.indexOf('pc-test') > 0) {
-        path = 'https://api.s.lang.live';
-    } else if (location.href.indexOf('kingkong.com.tw') > 0) {
-        path = 'https://tw.api.langlive.com';   
-    }
-    return path;
+    return '/api';
 }
